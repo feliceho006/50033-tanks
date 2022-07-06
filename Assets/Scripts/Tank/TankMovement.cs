@@ -19,12 +19,15 @@ public class TankMovement : MonoBehaviour
     private Rigidbody m_Rigidbody;         
     private float m_MovementInputValue;    
     private float m_TurnInputValue;        
-    private float m_OriginalPitch;         
+    private float m_OriginalPitch;
+
+    private Canvas canvasObject;
 
 
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
+
     }
 
 

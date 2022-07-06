@@ -8,8 +8,6 @@ public class HealPowerUp : MonoBehaviour
     private BoxCollider healCollider;
 
     public void Start(){
-        healCollider = this.GetComponent<BoxCollider>();
-
     }
 
 

@@ -75,8 +75,6 @@ public class GameManager : MonoBehaviour
         {
             // get a game location on the board
             Vector3 randomBoardLocation = GetRandomGameBoardLocation();
-            // Debug.Log(Quaternion.identity);
-            // spawn a random person prefab at that location
             
             Instantiate(m_PowerUpPrefabs[powerUpIndex], randomBoardLocation, Quaternion.Euler(-90, 0,0));
 
