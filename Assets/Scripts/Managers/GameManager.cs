@@ -4,6 +4,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
 
 public class GameManager : MonoBehaviour
@@ -14,10 +15,12 @@ public class GameManager : MonoBehaviour
     public CameraControl m_CameraControl;       
     public Text m_MessageText;                  
     public GameObject[] m_TankPrefabs;
+
+    public GameObject[] m_PowerUpPrefabs;
     public TankManager[] m_Tanks;               
     public List<Transform> wayPointsForAI;
 
-    private int m_RoundNumber;                  
+    public static int m_RoundNumber;                  
     private WaitForSeconds m_StartWait;         
     private WaitForSeconds m_EndWait;           
     private TankManager m_RoundWinner;          
@@ -30,6 +33,7 @@ public class GameManager : MonoBehaviour
         m_EndWait = new WaitForSeconds(m_EndDelay);
 
         SpawnAllTanks();
+        SpawnAllPowerUps();
         SetCameraTargets();
 
         StartCoroutine(GameLoop());
@@ -61,6 +65,53 @@ public class GameManager : MonoBehaviour
             targets[i] = m_Tanks[i].m_Instance.transform;
 
         m_CameraControl.m_Targets = targets;
+    }
+
+    private void SpawnAllPowerUps()
+    {
+ 
+        // spawn all people
+        for (int powerUpIndex = 0; powerUpIndex < m_PowerUpPrefabs.Length; powerUpIndex += 1)
+        {
+            // get a game location on the board
+            Vector3 randomBoardLocation = GetRandomGameBoardLocation();
+            // Debug.Log(Quaternion.identity);
+            // spawn a random person prefab at that location
+            
+            Instantiate(m_PowerUpPrefabs[powerUpIndex], randomBoardLocation, Quaternion.Euler(-90, 0,0));
+
+        }
+    }
+
+    private Vector3 GetRandomGameBoardLocation()
+    {
+        NavMeshTriangulation navMeshData = NavMesh.CalculateTriangulation();
+ 
+        int maxIndices = navMeshData.indices.Length - 3;
+ 
+        // pick the first indice of a random triangle in the nav mesh
+        int firstVertexSelected = UnityEngine.Random.Range(0, maxIndices);
+        int secondVertexSelected = UnityEngine.Random.Range(0, maxIndices);
+ 
+        // spawn on verticies
+        Vector3 point = navMeshData.vertices[navMeshData.indices[firstVertexSelected]];
+ 
+        Vector3 firstVertexPosition = navMeshData.vertices[navMeshData.indices[firstVertexSelected]];
+        Vector3 secondVertexPosition = navMeshData.vertices[navMeshData.indices[secondVertexSelected]];
+ 
+        // eliminate points that share a similar X or Z position to stop spawining in square grid line formations
+        if ((int)firstVertexPosition.x == (int)secondVertexPosition.x || (int)firstVertexPosition.z == (int)secondVertexPosition.z)
+        {
+            point = GetRandomGameBoardLocation(); // re-roll a position - I'm not happy with this recursion it could be better
+        }
+        else
+        {
+            // select a random point on it
+            Vector3 secondpos = new Vector3( secondVertexPosition.x, secondVertexPosition.y+1.0f, secondVertexPosition.z);
+            point = Vector3.Lerp(firstVertexPosition, secondpos, UnityEngine.Random.Range(0.05f, 0.95f));
+        }
+ 
+        return point;
     }
 
 

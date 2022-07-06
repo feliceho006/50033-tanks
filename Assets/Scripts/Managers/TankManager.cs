@@ -19,6 +19,8 @@ public class TankManager
     private GameObject m_CanvasGameObject;
     private StateController m_StateController;
 
+    public int RoundNumber = 0;
+
     public void SetupAI(List<Transform> wayPointList)
     {
         m_StateController = m_Instance.GetComponent<StateController>();
@@ -77,6 +79,7 @@ public class TankManager
     {
         m_Instance.transform.position = m_SpawnPoint.position;
         m_Instance.transform.rotation = m_SpawnPoint.rotation;
+        RoundNumber+=1;
 
         m_Instance.SetActive(false);
         m_Instance.SetActive(true);

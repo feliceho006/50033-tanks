@@ -33,7 +33,7 @@ public class ShellExplosion : MonoBehaviour
             var targetHealth = targetRigidbody.GetComponent<TankHealth>();
             if (targetHealth == null) continue;
 
-            float damage = CalculateDamage(targetRigidbody.position);
+            float damage = CalculateDamage(targetRigidbody.position, GameManager.m_RoundNumber);
             targetHealth.TakeDamage(damage);
         }
 
@@ -44,14 +44,15 @@ public class ShellExplosion : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private float CalculateDamage(Vector3 targetPosition)
+    private float CalculateDamage(Vector3 targetPosition, int roundNumber)
     {
         // Calculate the amount of damage a target should take based on it's position.
         Vector3 explosionToTarget = targetPosition - transform.position;
         float explosionDistance = explosionToTarget.magnitude;
         float relativeDistance = (m_ExplosionRadius - explosionDistance) / m_ExplosionRadius;
 
-        float damage = relativeDistance * m_MaxDamage;
+        float damage = relativeDistance * m_MaxDamage + 10*(roundNumber-1);
+        Debug.Log(damage);
         damage = Mathf.Max(0f, damage);
 
         return damage;

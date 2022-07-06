@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class TankMovement : MonoBehaviour
 {
@@ -79,6 +81,21 @@ public class TankMovement : MonoBehaviour
         Move();
         Turn();
     }
+
+    public void SpeedUp()
+    {
+        // Adjust the tank's current health, update the UI based on the new health and check whether or not the tank is dead.
+        m_Speed += 10;
+        StartCoroutine(removeEffect());
+    }
+
+    IEnumerator  removeEffect(){
+        // Debug.Log("Remove power");
+		yield  return  new  WaitForSeconds(5.0f);
+        Debug.Log("Remove power");
+		m_Speed -=  10;
+        Debug.Log(m_Speed);
+	}
 
 
     private void Move()
